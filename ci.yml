@@ -1,0 +1,35 @@
+name: CI
+
+# When this pipeline runs
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # the machine GitHub spins up to run this
+
+    steps:
+      # Step 1: grab your code onto that machine
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: install Python itself
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Step 3: install your project's dependencies
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Step 4: lint — catch obvious style/syntax problems
+      - name: Lint with flake8
+        run: flake8 . --max-line-length=100
+
+      # Step 5: run your tests
+      - name: Run tests
+        run: pytest -v
